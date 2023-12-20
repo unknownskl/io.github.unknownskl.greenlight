@@ -1,0 +1,37 @@
+name: Check for New Releases
+
+on:
+    schedule:
+        - cron: '0 0 * * *' # Run every day at midnight UTC
+
+jobs:
+    check-releases:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Get latest release
+              id: get_release
+              uses: actions/github-script@v4
+              with:
+                    script: |
+                        const { data: releases } = await github.repos.listReleases({
+                            owner: 'unknownskl',
+                            repo: 'greenlight'
+                        });
+                        const latestRelease = releases[0];
+                        console.log(`Latest release: ${latestRelease.tag_name}`);
+                        console.log(`Release URL: ${latestRelease.html_url}`);
+                        console.log(`Release published at: ${latestRelease.published_at}`);
+                        console.log(`Release assets: ${latestRelease.assets.length}`);
+
+            - name: Run workflow if new release exists
+              if: steps.get_release.outputs.latestRelease != ''
+              uses: actions/github-script@v4
+              with:
+                    script: |
+                        const latestRelease = context.payload.steps.get_release.outputs.latestRelease;
+                        console.log(`Running workflow for release: ${latestRelease.tag_name}`);
+                        // Add your workflow steps here
