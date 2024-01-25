@@ -30,7 +30,10 @@ modules:
         npm_config_offline: 'true'
         yarn_config_cache: /run/build/greenlight/flatpak-node/yarn-mirror
     build-commands:
-      - cp -a ../extralib -t /app/
+      - cp -a ../extralib/extralib -t /app/
+      - gunzip /app/extralib/libLLVM-16.0.6.so.gz
+      - cp -a ../extralib/reduceSoFiles.sh -t /app/extralib
+      - pushd /app/extralib && ln -s libLLVM-16.0.6.so libLLVM-16.so && chmod +x reduceSoFiles.sh && ./reduceSoFiles.sh && popd
       - yarn --offline
       - yarn run flatpak-build --offline -- --linux
       # Add icon, metadata and desktop file
@@ -45,13 +48,13 @@ modules:
     sources:
       - type: git
         url: https://github.com/unknownskl/greenlight
-        tag: v2.0.1
-        commit: bcdbf7c0b82e328c60dda94083e25f496d9bae7b
+        tag: v2.1.0
+        commit: ca00c75668020aa8b0ac0db4ab4de09a29b366cd
         dest: main
       - type: git
         url: https://github.com/Originalimoc/amd-patched-mesa
         dest: extralib
-        commit: "dd468982c84d77b1679a45f082af102b665dfd26"
+        commit: "a70058baf35f1823613f2577c30a477e93cd106a"
       - yarn-sources.json
       - type: inline
         dest-filename: .yarnrc
