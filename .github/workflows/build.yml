@@ -9,7 +9,8 @@ on:
       - 'release-**'
 
 jobs:
-  lint:
+  build:
+    name: Build flatpak
     runs-on: ubuntu-latest
 
     container:
