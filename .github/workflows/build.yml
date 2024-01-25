@@ -1,0 +1,33 @@
+name: Build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout Git repository
+          uses: actions/checkout@v4
+    
+        - name: Set up flatpak build cache
+          uses: actions/cache@v3
+          continue-on-error: false
+          with:
+            path: |
+              build/
+              .flatpak-builder/
+              flatpak-node/
+            key: ${{ runner.os }}-${{ runner.arch }}-flatpak-builder-${{ hashFiles('flatpak/*') }}
+            restore-keys: ${{ runner.os }}-${{ runner.arch }}-flatpak-builder-
+    
+        - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+          with:
+            bundle: greenlight.flatpak
+            manifest-path: io.github.unknownskl.greenlight.yml
+            cache-key: flatpak-builder-${{ github.sha }}
