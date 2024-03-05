@@ -49,7 +49,7 @@ modules:
       - type: git
         url: https://github.com/unknownskl/greenlight
         tag: v2.2.0
-        commit: 40f13b65db7896167c2ddda959d99d68877320d4
+        commit: aa3bff100a0ab1e5f029112b723582062813487e
         dest: main
       - type: git
         url: https://github.com/Originalimoc/amd-patched-mesa
