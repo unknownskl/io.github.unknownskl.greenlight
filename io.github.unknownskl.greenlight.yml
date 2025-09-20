@@ -1,11 +1,11 @@
 app-id: io.github.unknownskl.greenlight
 runtime: org.freedesktop.Platform
-runtime-version: '23.08'
+runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 base: org.electronjs.Electron2.BaseApp
-base-version: '23.08'
+base-version: '24.08'
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.node18
+  - org.freedesktop.Sdk.Extension.node22
 command: run.sh
 separate-locales: false
 finish-args:
@@ -17,7 +17,7 @@ finish-args:
   - --device=all
   - --filesystem=/run/udev:ro
 build-options:
-  append-path: /usr/lib/sdk/node18/bin
+  append-path: /usr/lib/sdk/node22/bin
   env:
     NPM_CONFIG_LOGLEVEL: info
 modules:
@@ -30,9 +30,12 @@ modules:
         npm_config_offline: 'true'
         yarn_config_cache: /run/build/greenlight/flatpak-node/yarn-mirror
     build-commands:
-      - cp -a ../extralib -t /app/
+      - cp -a ../extralib/extralib -t /app/
+      - gunzip /app/extralib/libLLVM-16.0.6.so.gz
+      - cp -a ../extralib/reduceSoFiles.sh -t /app/extralib
+      - pushd /app/extralib && ln -s libLLVM-16.0.6.so libLLVM-16.so && chmod +x reduceSoFiles.sh && ./reduceSoFiles.sh && popd
       - yarn --offline
-      - yarn run flatpak-build --offline -- --linux
+      - yarn run desktop flatpak-build --offline -- --linux
       # Add icon, metadata and desktop file
       - install -Dm 644 flatpak/io.github.unknownskl.greenlight.png ${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
       - install -Dm 644 flatpak/io.github.unknownskl.greenlight.desktop ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop
@@ -45,13 +48,13 @@ modules:
     sources:
       - type: git
         url: https://github.com/unknownskl/greenlight
-        tag: v2.0.0-flathub
-        commit: 012ca25739f460cafc1e6a863d006dbdc70ed97f
+        tag: v2.3.3
+        commit: 3668821104a5616f1b3a063ea7b8b2f9b33b0923
         dest: main
       - type: git
         url: https://github.com/Originalimoc/amd-patched-mesa
         dest: extralib
-        commit: "dd468982c84d77b1679a45f082af102b665dfd26"
+        commit: "a70058baf35f1823613f2577c30a477e93cd106a"
       - yarn-sources.json
       - type: inline
         dest-filename: .yarnrc
