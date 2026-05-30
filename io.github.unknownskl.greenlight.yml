@@ -37,7 +37,7 @@ modules:
       - pushd /app/extralib && ln -s libLLVM-16.0.6.so libLLVM-16.so && chmod +x reduceSoFiles.sh && ./reduceSoFiles.sh && popd
       - yarn --offline
       - yarn run desktop flatpak-build --offline -- --linux
-      # Add icon, metadata and desktop file
+      # Add icon, metadata and desktop file 
       - install -Dm 644 packages/desktop/flatpak/io.github.unknownskl.greenlight.png ${FLATPAK_DEST}/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
       - install -Dm 644 packages/desktop/flatpak/io.github.unknownskl.greenlight.desktop ${FLATPAK_DEST}/share/applications/${FLATPAK_ID}.desktop
       - install -Dm 644 packages/desktop/flatpak/io.github.unknownskl.greenlight.metainfo.xml ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.appdata.xml
